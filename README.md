@@ -1,4 +1,4 @@
-# NodejsHtmlSessions
+# xNode
 Es una sencilla base para comenzar tus nuevos proyectos web en Nodejs. Fácilmente personalizable y escalable.
 
 #### Características principales
@@ -8,6 +8,17 @@ Es una sencilla base para comenzar tus nuevos proyectos web en Nodejs. Fácilmen
 - Integración con Sendgrid para envío de emails.
 - Sistema de plantillas ejs preparado para el uso de layouts y partials.
 
+# Instalación
+1. Descarga o clona el proyecto
+```
+git clone https://github.com/AiramBG/xNode.git
+```
+
+2. Instala las dependiencias a través de npm
+```
+cd xNode
+npm install
+```
 
 # Configuración
 Toda la configuración del proyecto se realiza dentro del archivo [*/apps/setup.js*]. Durante el desarrollo podrás acceder a esta configuración a través de la variable global [setup].
@@ -15,23 +26,23 @@ Toda la configuración del proyecto se realiza dentro del archivo [*/apps/setup.
 #### Configuración básica de la app
 Dentro del archivo de setup:
 
-*url*
+**url**
 La dirección web para acceder al sitio.
 
-*mongoDB*
+**mongoDB**
 String de conexión a la base de datos de mongo.
 
-*adminEmail*
+**adminEmail**
 Es la dirección de correo electrónico para gestión del sitio. Se puede utilizar
 como dirección de contacto ante incidencias en la web.
 
-*app.name*
+**app.name**
 El nombre de la web.
 
-*app.codeName*
+**app.codeName**
 Nombre en código. Sin acentos, espacios y en minúscula.
 
-*app.email*
+**app.email**
 La dirección de correo electrónico oficial de contacto del sitio. Se utiliza
 en los emails que se envían a los usuarios.
 
@@ -41,7 +52,7 @@ El multi-idioma se adapta a las necesidades de cada proyecto, incluso puede ser 
 - Tipo [query]: Los idiomas cambian con un filtro: /users?hl=en, /users?hl=es ...
 - Tipo [param]: El idioma se define en la ruta: /es/usuarios , /en/users ...
 
-*queryKey*
+**queryKey**
 El parámetro de configuración queryKey por defecto es 'hl' y será la variable
 que contenga el código de idioma cuando esté configurado como tipo query.
 
