@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="<?= app.currentLocale ?>">
+<head>
+	<? include ../partials/header.html ?>
+	<title><?= title ?></title>
+</head>
+<body>
+
+	<div class="container-fluid">
+		<h1><?= setup.app.name ?></h1>
+		<p><?= __('HELLO_WORLD') ?></p>
+
+
+		<h2><i class="fa fa-language"></i> <?= __('LANGUAGES') ?></h2>
+
+		<? if (!setup.internationalization.enabled) { ?>
+			<div class="alert alert-info" role="alert"><em><?- __('LOCALE_DISABLED') ?></em></div>
+		<? } else { ?>
+			<ul class="fa-ul">
+				<? __l('details').forEach(function(locale) { ?>
+					<li>
+						<? if (req.getLocale() === locale.code) { ?>
+							<?- core.html.fal('circle')+locale.name+' ('+ locale.code+')' ?>
+						<? } else { ?>
+							<?- core.html.a(
+								core.html.fal('circle-o')+locale.name+' ('+locale.code+')',
+								__t('routes./', locale.code),
+								{hreflang: locale.code})
+							?>
+						<? } ?>
+					</li>
+				<? }); ?>
+			</ul>
+		<? } ?>
+
+		<? if (setup.auth.autocreateUsers) { ?>
+			<div class="alert alert-info"><em><?- __('DEV_REG_ON') ?></em></div>
+		<? } ?>
+
+		<div class="btn-group" role="group" aria-label="Basic example">
+			<?- core.html.a(
+				core.html.fal('sign-in')+__('SIGNIN'),
+				__('routes./login'),
+				{class: 'btn btn-success'})
+			?>
+			<? if (req.user) { ?>
+				<?- core.html.a(
+					core.html.fal('columns')+__('DASHBOARD'),
+					__('routes./dashboard'),
+					{class: 'btn btn-primary'})
+				?>
+				<?- core.html.a(
+					core.html.fal('power-off')+__('LOGOUT'),
+					__('routes./logout'),
+					{class: 'btn btn-danger'})
+				?>
+			<? } ?>
+		</div>
+	</div>
+
+
+
+	<? include ../partials/footer.html ?>
+</body>
+</html>

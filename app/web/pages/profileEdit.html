@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="<?= app.currentLocale ?>">
+<head>
+	<? include ../partials/header.html ?>
+	<title><?= title ?></title>
+</head>
+
+<body>
+	<div class="container">
+		<br>
+		<?- core.html.a(__('DASHBOARD'), __('routes./dashboard')) ?>
+		<br>
+
+		<div class="card card-body bg-light">
+			<div class="card-block">
+				<h3 class="card-title"><?= __('ACCOUNT_DATA') ?></h3>
+
+				<form class="form-signin" method="put" action="/api/profile" success="formOK" fail="formError">
+					<div class="form-group row">
+						<label for="name" class="col-sm-2 col-form-label"><?= __('NAME') ?></label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="name" name="name" value="<?= user.name ?>">
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="email" class="col-sm-2 col-form-label"><?= __('EMAIL') ?></label>
+						<div class="col-sm-10">
+							<input type="email" class="form-control" id="email" name="email" value="<?= user.email ?>">
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="locale" class="col-sm-2 col-form-label" ><?= __('LANGUAGE') ?></label>
+						<div class="col-sm-10">
+							<select class="custom-select" id="locale" name="locale">
+								<? __l('details').forEach(function(locale) { ?>
+								<option value="<?= locale.code ?>" <?= (user.locale == locale.code)? 'selected' : '' ?>><?= locale.name ?> (<?= locale.code ?>)</option>
+								<? }); ?>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="avatar" class="col-sm-2 col-form-label"><?= __('AVATAR') ?></label>
+						<div class="col-sm-10">
+							<input type="file" name="avatar" id="avatar" class="d-none" onchange="previewFile()">
+							<img
+								src="<?= (user.avatar)? user.avatar.path : '/img/'+setup.file.defaultAvatar ?>"
+								alt="<?- __('AVATAR') ?>"
+								height="100px"
+								width="100px"
+								class="rounded-circle fit-cover"
+								onclick="$('#avatar').trigger('click');"
+							>
+						</div>
+					</div>
+
+
+
+					<button class="btn btn-primary pull-right" type="submit"><?= __('UPDATE') ?></button>
+				</form>
+
+			</div>
+		</div>
+
+		<div class="card card-body bg-light mt-3">
+			<div class="card-block">
+				<h3 class="card-title"><?= __('PASSWORD') ?></h3>
+
+				<form class="form-signin" method="put" action="/api/profile/password" success="formOK" fail="formError">
+
+					<div class="row">
+						<div class="col-xs-12 col-sm-4 col-md-5">
+							<input type="password" class="form-control" id="password" name="password" placeholder="<?= __('PASSWORD') ?>">
+						</div>
+						<div class="col-xs-12 col-sm-4 col-md-5">
+							<input type="password" class="form-control" id="password_r" name="password_r" placeholder="<?= __('PWD_REPEAT') ?>">
+							<small id="pwdmsg" class="text-danger"></small>
+						</div>
+						<div class="col-xs-12 col-sm-3 col-md-2">
+							<button id="submitpwd" class="btn btn-primary pull-right" type="submit"><?= __('UPDATE') ?></button>
+						</div>
+					</div>
+				</form>
+
+			</div>
+		</div>
+
+		<p class="mt-2">
+			<button type="button" class="btn btn-link" data-toggle="modal" data-target="#confirmationModal" data-action="DISABLE_ACCOUNT"><?= __('DISABLE_ACCOUNT') ?></button>
+			<button type="button" class="btn btn-link" data-toggle="modal" data-target="#confirmationModal" data-action="DELETE_ACCOUNT"><?= __('DELETE_ACCOUNT') ?></button>
+		</p>
+
+		<!-- Modal -->
+		<div id="confirmationModal" class="modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title"></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-success" data-dismiss="modal"><?= __('CANCEL')?></button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<script>
+		<? include ../public/js/submitForm.js ?>
+
+		function formOK(data) {
+			if (data.redirect) window.location = data.redirect;
+			else $.notify('<?= __("UPDATE_OK") ?>', 'success');
+			$('#password').empty();
+			$('#password_r').empty();
+		}
+
+		function formError(data) {
+			if (data.responseJSON) {
+				if (!data.responseJSON.field) return $.notify(data.responseJSON.message, 'error');
+
+				$('input[name='+data.responseJSON.field+']')
+					.notify(data.responseJSON.message, {className: 'error', position: "bottom"});
+			}
+		}
+
+		var pwd_err = '<?= __("PWD_MISSMATCH_ERR") ?>';
+		$(document).ready(function() {
+			validatePasswords();
+			$('#password').on('input', validatePasswords);
+			$('#password_r').on('input', validatePasswords);
+		});
+
+		$('#confirmationModal').on('show.bs.modal', function(ev) {
+			var act = $(ev.relatedTarget).data('action');
+			if (act == 'DISABLE_ACCOUNT') {
+				$(this).find('.modal-title').text('<?= __("DISABLE_ACCOUNT") ?>');
+				$(this).find('.modal-body').text('<?= __("DISABLE_ACCOUNT_CONFIRM") ?>');
+				$(this).find('.modal-footer').append('<?- core.html.a(__("CONFIRM"), __("routes./profile/disable")) ?>');
+			}
+			else if (act == 'DELETE_ACCOUNT') {
+				$(this).find('.modal-title').text('<?= __("DELETE_ACCOUNT") ?>');
+				$(this).find('.modal-body').text('<?= __("DELETE_ACCOUNT_CONFIRM") ?>');
+				$(this).find('.modal-footer').append('<?- core.html.a(__("CONFIRM"), __("routes./profile/delete")) ?>');
+			}
+		});
+		$('#confirmationModal').on('hidden.bs.modal', function(ev) {
+			$(this).find('.modal-title').text('');
+			$(this).find('.modal-body').text('');
+			$(this).find('.modal-footer a').remove();
+		});
+
+		function validatePasswords() {
+			var pw = $('#password').val();
+			var pw2 = $('#password_r').val();
+			if (pw && pw == pw2) {
+				$('#pwdmsg').empty().text('');
+				$('#submitpwd').prop('disabled', false);
+			}
+			else {
+				if (pw || pw2) $('#pwdmsg').empty().text(pwd_err);
+				$('#submitpwd').prop('disabled', true);
+			}
+		}
+
+		//Permite visualizar la imagen antes de subirla
+		function previewFile() {
+			var preview = document.querySelector('img');
+			var file    = document.querySelector('input[type=file]').files[0];
+			var reader  = new FileReader();
+
+			reader.addEventListener("load", function() {
+				preview.src = reader.result;
+			}, false);
+
+			if (file) reader.readAsDataURL(file);
+		}
+	</script>
+</body>
+</html>

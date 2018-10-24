@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="<?= app.currentLocale ?>">
+	<head>
+		<? include ../partials/header.html ?>
+		<title><?= __('LOGIN') ?></title>
+		<link rel="stylesheet" href="/css/signin.css">
+	</head>
+
+	<body>
+		<div class="container">
+			<form class="form-signin" method="post" action="/api/login" success="formOK" fail="formError">
+				<h2 class="form-signin-heading"><?= __('SIGNIN') ?></h2>
+				<label for="inputEmail" class="sr-only"><?= __('EMAIL') ?></label>
+				<input type="email" name="email" id="inputEmail" class="form-control" placeholder="<?- __('EMAIL') ?>" required autofocus>
+				<label for="inputPassword" class="sr-only"><?= __('PASSWORD') ?></label>
+				<input type="password" name="password" id="inputPassword" class="form-control" placeholder="<?- __('PASSWORD') ?>" required>
+				<!--<input type="file" name="file" id="file" />-->
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" name="remember" value="1"> <?= __('REMEMBER_ME') ?>
+					</label>
+				</div>
+				<? if (setup.auth.autocreateUsers) { ?>
+					<div class="alert alert-info mb-3"><?= __('AUTOCREATE_ENABLED') ?></div>
+				<? } ?>
+				<button class="btn btn-lg btn-primary btn-block" type="submit"><?= __('SIGNIN') ?></button>
+				<div class="text-right"><small>
+					<?- core.html.a(__('FORGOT_PASSWORD'), __('routes./forgot')) ?>
+				</small></div>
+			</form>
+		</div>
+	</body>
+
+	<script>
+		<? include ../public/js/submitForm.js ?>
+
+		function formOK(data) {
+			if (data.redirect) window.location = data.redirect;
+			else $.notify('<?= __('ACCESS_GRANTED') ?>', 'success');
+		}
+
+		function formError(data) {
+			if (data.responseJSON) {
+				if (!data.responseJSON.field) return $.notify(data.responseJSON.message, 'error');
+
+				$('input[name='+data.responseJSON.field+']')
+					.notify(data.responseJSON.message, {className: 'error', position: "right"});
+			}
+		}
+	</script>
+
+
+
+</html>

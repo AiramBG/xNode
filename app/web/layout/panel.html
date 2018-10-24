@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="<?= app.currentLocale ?>">
+<head>
+	<? include ../partials/header.html ?>
+	<link rel="stylesheet" href="/css/dashboard.css">
+	<title><?= title ?></title>
+</head>
+<body>
+	<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+		<?- core.html.a(setup.app.name, __('routes./dashboard'), {class: 'navbar-brand col-sm-3 col-md-2 mr-0'}) ?>
+		<input class="form-control form-control-dark w-100" type="text" placeholder="<?- __('SEARCH') ?>" aria-label="<?- __('SEARCH') ?>">
+		<ul class="navbar-nav px-3">
+			<li class="nav-item text-nowrap">
+
+				<div class="dropdown md-right">
+				  <a class="dropdown-toggle nav-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					  <img
+ 						 src="<?= (user.avatar)? user.avatar.path : '/img/'+setup.file.defaultAvatar ?>"
+ 						 alt="<?= user.name ?>"
+ 						 height="20px"
+ 						 width="20px"
+ 						 class="rounded-circle fit-cover"
+ 					 >
+				  </a>
+				  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+						<?- core.html.a(
+							core.html.fal('user')+__('PROFILE'),
+							__('routes./profile'),
+							{class: 'dropdown-item'})
+						?>
+						<div class="dropdown-divider"></div>
+						<?- core.html.a(
+							core.html.fal('power-off')+__('SIGNOUT'),
+							__('routes./logout'),
+							{class: 'dropdown-item'})
+						?>
+				  </div>
+				</div>
+
+			</li>
+		</ul>
+	</nav>
+
+	<div class="container-fluid">
+		<div class="row">
+			<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+				<div class="sidebar-sticky">
+
+					<div class="alert alert-info alert-dismissible fade show mx-3" role="alert">
+						<small>
+							<strong><?= __('LAYOUT_EXAMPLE1') ?></strong>
+							<p><?= __('LAYOUT_EXAMPLE2') ?></p>
+						</small>
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+
+					<ul class="nav flex-column">
+						<? for (let i=0; i<menu.length; i++) { ?>
+							<li class="nav-item">
+								<? if (sectionId == menu[i].id) {
+									menu[i].name += ' <span class="sr-only">(current)</span>';
+									menu[i].class = 'nav-link active';
+								} ?>
+								<?- core.html.a(
+									core.html.fal(menu[i].icon)+menu[i].name,
+									menu[i].href,
+									{class: (menu[i].class)? menu[i].class : 'nav-link'})
+								?>
+							</li>
+						<? } ?>
+					</ul>
+
+					<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+						<span>Saved reports</span>
+						<?- core.html.a(
+							core.html.fa('plus-circle', {class: 'fa-lg'}),
+							'#',
+							{class: 'd-flex align-items-center text-muted'})
+						?>
+					</h6>
+					<ul class="nav flex-column mb-2">
+						<? for (let i=0; i<savedReports.length; i++) { ?>
+						<li class="nav-item">
+							<?- core.html.a(
+								core.html.fal('file-text-o')+savedReports[i].name,
+								savedReports[i].href,
+								{class: 'nav-link'})
+							?>
+						</li>
+					<? } ?>
+					</ul>
+				</div>
+			</nav>
+
+			<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+
+				<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+					<?- body ?>
+				</div>
+			</main>
+		</div>
+	</div>
+
+
+
+
+
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+	<script>
+		var ctx = document.getElementById("myChart");
+		var myChart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+				datasets: [{
+					data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
+					lineTension: 0,
+					backgroundColor: 'transparent',
+					borderColor: '#007bff',
+					borderWidth: 4,
+					pointBackgroundColor: '#007bff'
+				}]
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: false
+						}
+					}]
+				},
+				legend: {
+					display: false,
+				}
+			}
+		});
+	</script>
+ </body>
+</html>

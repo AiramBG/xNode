@@ -1,0 +1,39 @@
+<h1 class="h2"><?= __('DASHBOARD') ?></h1>
+
+<div class="btn-toolbar mb-2 mb-md-0">
+	<div class="btn-group mr-2">
+		<button class="btn btn-sm btn-outline-secondary">Share</button>
+		<button class="btn btn-sm btn-outline-secondary">Export</button>
+	</div>
+	<button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+		 <span data-feather="calendar"></span>
+		 This week
+	 </button>
+ </div>
+</div>
+
+<canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+
+<h2><?= __('USERS') ?></h2>
+<div class="table-responsive">
+ <table class="table table-striped table-sm">
+	 <thead>
+		 <tr>
+			 <th><?= __('NAME') ?></th>
+			 <th><?= __('EMAIL') ?></th>
+			 <th><?= __('CREATED_AT') ?></th>
+			 <th><?= __('UPDATED_AT') ?></th>
+		 </tr>
+	 </thead>
+	 <tbody>
+		 <? for(let i=0; i<users.length; i++) { ?>
+		 <tr>
+			 <td><?= users[i].name ?></td>
+			 <td><?= users[i].email ?></td>
+			 <td><?= users[i].createdAt ?></td>
+			 <td><?= (users[i].updatedAt)? users[i].updatedAt : '' ?></td>
+		 </tr>
+	 <? } ?>
+	 </tbody>
+ </table>
+</div>

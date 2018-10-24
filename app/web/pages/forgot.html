@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="<?= app.currentLocale ?>">
+	<head>
+		<? include ../partials/header.html ?>
+		<title><?= __('PWD_RECOVERY') ?></title>
+		<link rel="stylesheet" href="/css/signin.css">
+	</head>
+
+	<body>
+		<div class="container">
+			<h2 class="form-signin-heading text-center"><?= __('PWD_RECOVERY') ?></h2>
+			<form class="form-signin" method="post" action="/api/forgot" success="formOK" fail="formError">
+				<p><small class="form-text text-muted"><?= __('FORGOT_STEP1') ?></small></p>
+				<label for="inputEmail" class="sr-only"><?= __('EMAIL') ?></label>
+				<input type="email" name="email" id="inputEmail" class="form-control" placeholder="<?- __('EMAIL') ?>" required autofocus>
+				<br>
+				<button class="btn btn-lg btn-primary btn-block" type="submit"><?= __('SUBMIT') ?></button>
+				<small><?- core.html.a(__('RETURN'), '/') ?></small>
+			</form>
+
+		</div>
+	</body>
+
+	<script>
+		<? include ../public/js/submitForm.js ?>
+
+		function formOK(data) {
+			if (data.redirect) window.location = data.redirect;
+			else $.notify('<?= __('GENERIC_EMAIL_SENT') ?>', 'success');
+		}
+
+		function formError(data) {
+			if (data.responseJSON) {
+				if (!data.responseJSON.field) return $.notify(data.responseJSON.message, 'error');
+
+				$('input[name='+data.responseJSON.field+']')
+					.notify(data.responseJSON.message, {className: 'error', position: "right"});
+			}
+		}
+	</script>
+
+
+
+</html>
